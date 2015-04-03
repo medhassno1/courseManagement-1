@@ -28,6 +28,11 @@ if (Meteor.isClient) {
 			event.target.number.value = "";
 			event.target.title.value = "";
 			event.target.credits.value = "";
+		},
+		"click .delete": function () {
+			// "this" points to the course object
+			if (confirm ("Do you really want to delete the course \"" + this.number + " - " + this.title + "\"?"))
+				Meteor.call("deleteCourse", this);
 		}
 	});
 }
@@ -42,5 +47,9 @@ if (Meteor.isServer) {
 Meteor.methods({
 	"addCourse": function (number, title, grade, credits) {
 		Courses.insert({number: number, title: title, credits: credits, grade: grade, user: Meteor.userId()});
+	},
+	"deleteCourse": function (course) {
+		if (Meteor.userId() == course.user)
+			Courses.remove(course);
 	}
 });
